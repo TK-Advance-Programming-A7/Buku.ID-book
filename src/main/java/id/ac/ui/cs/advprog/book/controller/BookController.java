@@ -66,4 +66,29 @@ public class BookController {
                         new ResponseEntity<>(editedBook, HttpStatus.OK) :
                         new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @PutMapping("/decreaseStock/{id}/{amount}")
+    public CompletableFuture<ResponseEntity<String>> decreaseStock(@PathVariable("id") int idBook, @PathVariable("amount") int amount) {
+        try {
+            return bookService.decreaseStock(idBook, amount)
+                    .thenApply(unused -> new ResponseEntity<>("Stock of book with id " + idBook + " has been decreased by " + amount, HttpStatus.OK));
+        } catch (NoSuchElementException e) {
+            return CompletableFuture.completedFuture(new ResponseEntity<>("Book with id " + idBook + " not found", HttpStatus.NOT_FOUND));
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(new ResponseEntity<>("Failed to decrease stock of book with id " + idBook, HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/increaseStock/{id}/{amount}")
+    public CompletableFuture<ResponseEntity<String>> increaseStock(@PathVariable("id") int idBook, @PathVariable("amount") int amount) {
+        try {
+            return bookService.increaseStock(idBook, amount)
+                    .thenApply(unused -> new ResponseEntity<>("Stock of book with id " + idBook + " has been increased by " + amount, HttpStatus.OK));
+        } catch (NoSuchElementException e) {
+            return CompletableFuture.completedFuture(new ResponseEntity<>("Book with id " + idBook + " not found", HttpStatus.NOT_FOUND));
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(new ResponseEntity<>("Failed to increase stock of book with id " + idBook, HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
 }

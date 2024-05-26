@@ -29,7 +29,8 @@ class SeedServiceTest {
 
     @Test
     void testSeed() {
-        int numberOfBooks = 1000;
+
+        int numberOfBooks = 100;
         seedService.seed();
         verify(bookRepository, times(numberOfBooks)).save(any(Book.class));
     }

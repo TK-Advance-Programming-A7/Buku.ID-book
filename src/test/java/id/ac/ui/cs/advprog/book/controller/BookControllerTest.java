@@ -168,4 +168,84 @@ class BookControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(bookService, times(1)).editBook(idBook, updatedBook);
     }
+
+    @Test
+    void testDecreaseStock_WhenBookExists() {
+        int idBook = 1;
+        int amount = 1;
+        CompletableFuture<Void> futureVoid = CompletableFuture.completedFuture(null);
+        when(bookService.decreaseStock(idBook, amount)).thenReturn(futureVoid);
+
+        ResponseEntity<String> responseEntity = bookController.decreaseStock(idBook, amount).join();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Stock of book with id " + idBook + " has been decreased by " + amount, responseEntity.getBody());
+        verify(bookService, times(1)).decreaseStock(idBook, amount);
+    }
+
+    @Test
+    void testDecreaseStock_WhenBookNotExists() {
+        int idBook = 1;
+        int amount = 1;
+        doThrow(new NoSuchElementException()).when(bookService).decreaseStock(idBook, amount);
+
+        ResponseEntity<String> responseEntity = bookController.decreaseStock(idBook, amount).join();
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Book with id " + idBook + " not found", responseEntity.getBody());
+        verify(bookService, times(1)).decreaseStock(idBook, amount);
+    }
+
+    @Test
+    void testDecreaseStock_WhenExceptionOccurs() {
+        int idBook = 1;
+        int amount = 1;
+        doThrow(new RuntimeException()).when(bookService).decreaseStock(idBook, amount);
+
+        ResponseEntity<String> responseEntity = bookController.decreaseStock(idBook, amount).join();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals("Failed to decrease stock of book with id " + idBook, responseEntity.getBody());
+        verify(bookService, times(1)).decreaseStock(idBook, amount);
+    }
+
+    @Test
+    void testIncreaseStock_WhenBookExists() {
+        int idBook = 1;
+        int amount = 1;
+        CompletableFuture<Void> futureVoid = CompletableFuture.completedFuture(null);
+        when(bookService.increaseStock(idBook, amount)).thenReturn(futureVoid);
+
+        ResponseEntity<String> responseEntity = bookController.increaseStock(idBook, amount).join();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Stock of book with id " + idBook + " has been increased by " + amount, responseEntity.getBody());
+        verify(bookService, times(1)).increaseStock(idBook, amount);
+    }
+
+    @Test
+    void testIncreaseStock_WhenBookNotExists() {
+        int idBook = 1;
+        int amount = 1;
+        doThrow(new NoSuchElementException()).when(bookService).increaseStock(idBook, amount);
+
+        ResponseEntity<String> responseEntity = bookController.increaseStock(idBook, amount).join();
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Book with id " + idBook + " not found", responseEntity.getBody());
+        verify(bookService, times(1)).increaseStock(idBook, amount);
+    }
+
+    @Test
+    void testIncreaseStock_WhenExceptionOccurs() {
+        int idBook = 1;
+        int amount = 1;
+        doThrow(new RuntimeException()).when(bookService).increaseStock(idBook, amount);
+
+        ResponseEntity<String> responseEntity = bookController.increaseStock(idBook, amount).join();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals("Failed to increase stock of book with id " + idBook, responseEntity.getBody());
+        verify(bookService, times(1)).increaseStock(idBook, amount);
+    }
 }

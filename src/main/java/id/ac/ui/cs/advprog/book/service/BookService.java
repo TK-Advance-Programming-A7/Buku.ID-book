@@ -15,4 +15,6 @@ public interface BookService {
     CompletableFuture<Void> deleteBook(int idBook);
     CompletableFuture<List<Book>> getBooksByAuthor(String author);
     CompletableFuture<Book> editBook(int idBook, Book updatedBook);
+    CompletableFuture<Void> decreaseStock(int idBook, int amount);
+    CompletableFuture<Void> increaseStock(int idBook, int amount);
 }
